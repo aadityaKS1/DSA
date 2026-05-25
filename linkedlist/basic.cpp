@@ -35,11 +35,11 @@ int lengthOfLL(Node* head){
     }
     return count;
 }
-int SearchInLL(Node*head,int val){
+int SearchInLL(Node*head,int el){
     int found=0;
     Node*temp=head;
     while(temp!=NULL){
-        if(temp->data==val){
+        if(temp->data==el){
             found=1;
             break;
         }
@@ -47,36 +47,35 @@ int SearchInLL(Node*head,int val){
     }
     return found;
     }
-Node* insertHead(Node* head,int val){
+Node* insertHead(Node* head,int el){
     if (head==NULL){
-        return new Node(val);
+        return new Node(el);
     }
-    return new Node(val,head);
+    return new Node(el,head);
 }
-Node * insertTail(Node* head,int val){
+Node * insertTail(Node* head,int el){
     if(head==NULL){
-        return new Node(val);
+        return new Node(el);
     }
     Node * temp=head;
     while( temp->next!=NULL){
         temp=temp->next;
     }
-    temp->next=new Node(val);
+    temp->next=new Node(el);
     return head;
 }
-Node * insertatK(Node * head, int val ,int k){
+Node * insertatK(Node * head, int el ,int k){
     if(head==NULL){
-        return new Node(val);
+        return new Node(el);
     }
     if(k==1){
-        return new Node(val,head);
+        return new Node(el,head);
     }
     Node * temp=head;
     int count=1;
     while(temp!=NULL){
         if(count==k-1){
-            Node * newNode =new Node(val);
-            newNode->next=temp->next;
+            Node * newNode =new Node(el,temp->next);
             temp->next=newNode;
             break;
         }
@@ -85,14 +84,111 @@ Node * insertatK(Node * head, int val ,int k){
     }
     return head;
 }
+Node * insertBeforeVal(Node* head,int el,int val){
+    if(head==NULL){
+        return NULL;
+    }
+    if(head->data==val){
+        return new Node(el,head);
+    }
+    Node * temp=head;
+    while(temp->next!=NULL){
+        if( temp->next->data==val){
+            Node * newNode=new Node(el,temp->next);
+            temp->next=newNode;
+            break;
+        }
+        temp=temp->next;
+    }
+    return head;
+}
+Node * deleteHead(Node* head){
+    if(head==NULL){
+        return head;
+    }
+    Node * temp=head;
+    head=head->next;
+    delete temp;
+    return head;
+}   
+Node * deleteTail(Node* head){
+    if(head==NULL || head->next==NULL){
+        return NULL;
+    }
+
+    Node * temp=head;
+    while(temp->next->next!=NULL){
+        temp=temp->next;
+    }
+    delete temp->next;
+    temp->next=NULL;
+    return head;
+}
+Node * deleteAtK(Node* head,int k){
+    if (head==NULL){
+        return head;
+    }
+    if(k==1){
+        Node* temp=head;
+        head=head->next;
+        delete temp;    
+        return head;
+    }
+    int cnt=0;
+    Node * temp=head;
+    Node * prev=NULL;
+    while(temp!=NULL){
+        cnt++;
+        if(cnt==k){
+            prev->next=prev->next->next;
+            delete temp;
+            break;
+        }
+        prev=temp;
+        temp=temp->next;
+        
+    }
+    return head;
+}
+Node * removeEl(Node * head,int el){
+    if(head==NULL){
+        return head;
+    }
+    while(head!=NULL && head->data==el){
+        Node * temp=head;
+        head=head->next;
+        delete temp;
+    }
+    Node * temp=head;
+    Node * prev=NULL;
+    while(temp!=NULL ){
+        if(temp->data==el){
+            prev->next=prev->next->next;
+            delete temp;
+            break;
+        }
+
+            prev=temp;
+            temp=temp->next;
+        
+    }
+    return head;
+}   
 int main(){
     vector<int> arr={13,55,6,2,77,8000000};
     Node *head=convertArr2LL(arr);
-    cout<<head->data;
     //insertat tail
     head=insertTail(head,999);
     //insert at 3
     head=insertatK(head,1000,3);
+    //insert before 77
+    head=insertBeforeVal(head,500,77);
+    //delete head
+    head=deleteHead(head);
+    //delete at k
+    head=deleteAtK(head,4);
+    //delete el
+    head=removeEl(head,55);
     //traversal
     Node* temp=head;
     while(temp!=NULL){
@@ -104,8 +200,9 @@ int main(){
     cout<<endl;
     //search in LL
     cout<<SearchInLL(head,55);
-    head=insertHead(head,100);
+    head=insertHead(head,10);
 
 
     return 0;
+    
 }
